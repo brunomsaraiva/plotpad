@@ -78,7 +78,7 @@ class MainWindow:
 
     def plotMedianLine(self, values, count):
         medianvalue = np.median(np.array(values))
-        line_x = np.arange(0.3+count, 0.8+count, 0.1)
+        line_x = np.arange(0.1+count, 1.0+count, 0.1)
         print len(line_x), line_x
         self.ax.plot(line_x, [medianvalue]*len(line_x), c="k", linewidth=1.5)
         self.ax.annotate(str(medianvalue)[0:5], (0.4+count, medianvalue+0.3),
@@ -89,7 +89,7 @@ class MainWindow:
         self.ax.scatter(0.5+count, meanvalue, s=50, c="k", alpha=1, marker="x")
 
         standarddeviationvalue = np.std(np.array(values))
-        line_x = np.arange(0.1+count, 1.0+count, 0.1)[0:9]
+        line_x = np.arange(0.3+count, 0.8+count, 0.1)[0:6]
         print len(line_x), line_x
         line_y = np.arange(meanvalue-standarddeviationvalue, meanvalue+standarddeviationvalue+0.05, 0.1)
         self.ax.plot(line_x, [meanvalue+standarddeviationvalue]*len(line_x), c="k", linestyle="-", linewidth=1.5)
