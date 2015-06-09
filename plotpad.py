@@ -9,7 +9,8 @@ from itertools import cycle
 import numpy as np
 import tkMessageBox
 import sys
-import FileDialog
+import FileDialog  # only usefull, when creating a windows executable file, using pyinstaller
+                   # without it, a few dependencies won't be imported
 
 
 class MainWindow:
@@ -29,7 +30,7 @@ class MainWindow:
         plt.xticks([])
         plt.grid(True)
 
-        self.canvas = FigureCanvasTkAgg(self.fig, master= self.root)
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self.root)
         self.canvas.show()
         self.canvas.get_tk_widget().pack()
 
@@ -73,14 +74,27 @@ class MainWindow:
             self.conditions.append(str(item[0]))
             self.ratios.append(float(item[1]))
 
-        self.data = self.formatdata( self.conditions, self.ratios)
+        self.data = self.formatdata(self.conditions, self.ratios)
 
     def plotMedianLine(self, values, count):
         medianvalue = np.median(np.array(values))
-        line_x = np.arange(0.2+count, 0.8+count, 0.1)
-        self.ax.plot(line_x, [medianvalue]*len(line_x), c="k")
+        line_x = np.arange(0.3+count, 0.8+count, 0.1)
+        print len(line_x), line_x
+        self.ax.plot(line_x, [medianvalue]*len(line_x), c="k", linewidth=1.5)
         self.ax.annotate(str(medianvalue)[0:5], (0.4+count, medianvalue+0.3),
                          backgroundcolor="w", bbox=dict(facecolor="red"))
+
+    def plotMeanStd(self, values, count):
+        meanvalue = np.mean(np.array(values))
+        self.ax.scatter(0.5+count, meanvalue, s=50, c="k", alpha=1, marker="x")
+
+        standarddeviationvalue = np.std(np.array(values))
+        line_x = np.arange(0.1+count, 1.0+count, 0.1)[0:9]
+        print len(line_x), line_x
+        line_y = np.arange(meanvalue-standarddeviationvalue, meanvalue+standarddeviationvalue+0.05, 0.1)
+        self.ax.plot(line_x, [meanvalue+standarddeviationvalue]*len(line_x), c="k", linestyle="-", linewidth=1.5)
+        self.ax.plot(line_x, [meanvalue-standarddeviationvalue]*len(line_x), c="k", linestyle="-", linewidth=1.5)
+        self.ax.plot([0.5+count]*len(line_y), line_y, c="k", linestyle="-", linewidth=1.5)
 
     def plotdata(self, data):
         count = 0
@@ -95,6 +109,8 @@ class MainWindow:
                 self.ax.scatter(x*0.01+count, num, s=50, c=colors, alpha=0.5)
 
             self.plotMedianLine(self.data[cond], count)
+
+            self.plotMeanStd(self.data[cond], count)
 
             count += 1
 
