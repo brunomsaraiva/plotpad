@@ -45,50 +45,57 @@ class MainWindow:
         self.canvas._tkcanvas.pack()
 
         self.buttons_topframe = tk.Frame(self.root)
-        self.buttons_topframe.pack()
+        self.buttons_topframe.pack(fill="x")
 
         self.buttons_midframe = tk.Frame(self.root)
-        self.buttons_midframe.pack()
+        self.buttons_midframe.pack(fill="x")
 
         self.buttons_botframe = tk.Frame(self.root)
-        self.buttons_botframe.pack()
+        self.buttons_botframe.pack(fill="x")
 
-        self.open_button = tk.Button(self.buttons_topframe, text="Open CSV File", command=self.openfile)
-        self.open_button.pack(side="left")
+        b_width = 14
+        b_side = "left"
 
-        self.plot_button = tk.Button(self.buttons_topframe, text="Plot Data", command=self.plotdata)
-        self.plot_button.pack(side="left")
+        self.open_button = tk.Button(self.buttons_topframe, text="Open CSV File", command=self.openfile, width=b_width)
+        self.open_button.pack(side=b_side)
 
-        self.clear_button = tk.Button(self.buttons_topframe, text="Clear Plot", command=self.clearplot)
-        self.clear_button.pack(side="left")
+        self.plot_button = tk.Button(self.buttons_topframe, text="Plot Data", command=self.plotdata, width=b_width)
+        self.plot_button.pack(side=b_side)
 
-        self.plotmean_button = tk.Button(self.buttons_midframe, text="Plot Mean", command=self.plotmeanline)
-        self.plotmean_button.pack(side="left")
+        self.clear_button = tk.Button(self.buttons_topframe, text="Clear Plot", command=self.clearplot, width=b_width)
+        self.clear_button.pack(side=b_side)
 
-        self.clearmean_button = tk.Button(self.buttons_midframe, text="Clear Mean Plot", command=self.clearmean)
-        self.clearmean_button.pack(side="left")
+        self.plotmean_button = tk.Button(self.buttons_midframe, text="Plot Mean", command=self.plotmeanline,
+                                         width=b_width)
+        self.plotmean_button.pack(side=b_side)
 
-        self.plotmedian_button = tk.Button(self.buttons_midframe, text="Plot Median", command=self.plotmedianline)
-        self.plotmedian_button.pack(side="left")
+        self.clearmean_button = tk.Button(self.buttons_botframe, text="Clear Mean Plot", command=self.clearmean,
+                                          width=b_width)
+        self.clearmean_button.pack(side=b_side)
 
-        self.clearmedian_button = tk.Button(self.buttons_midframe, text="Clear Median Plot", command=self.clearmedian)
-        self.clearmedian_button.pack(side="left")
+        self.plotmedian_button = tk.Button(self.buttons_midframe, text="Plot Median", command=self.plotmedianline,
+                                           width=b_width)
+        self.plotmedian_button.pack(side=b_side)
 
-        self.plotpercentile_button = tk.Button(self.buttons_botframe, text="Plot Percentile",
-                                               command=self.plotpercentile)
-        self.plotpercentile_button.pack(side="left")
+        self.clearmedian_button = tk.Button(self.buttons_botframe, text="Clear Median Plot", command=self.clearmedian,
+                                            width=b_width)
+        self.clearmedian_button.pack(side=b_side)
 
-        self.percentile1_entry = tk.Entry(self.buttons_botframe, justify="center")
-        self.percentile1_entry.pack(side="left")
+        self.plotpercentile_button = tk.Button(self.buttons_midframe, text="Plot Percentile",
+                                               command=self.plotpercentile, width=b_width)
+        self.plotpercentile_button.pack(side=b_side)
+
+        self.percentile1_entry = tk.Entry(self.buttons_botframe, justify="center", width=8)
+        self.percentile1_entry.pack(side=b_side)
         self.percentile1_entry.insert(10, "25")
 
-        self.percentile2_entry = tk.Entry(self.buttons_botframe, justify="center")
-        self.percentile2_entry.pack(side="left")
+        self.percentile2_entry = tk.Entry(self.buttons_botframe, justify="center", width=8)
+        self.percentile2_entry.pack(side=b_side)
         self.percentile2_entry.insert(10, "75")
 
         self.clearpercentile_button = tk.Button(self.buttons_botframe, text="Clear Percentile",
-                                                command=self.clearpercentile)
-        self.clearpercentile_button.pack(side="left")
+                                                command=self.clearpercentile, width=b_width)
+        self.clearpercentile_button.pack(side=b_side)
 
     def formatdata(self, cond, rat):
         conditions = sorted(set(cond))
