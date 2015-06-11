@@ -9,7 +9,7 @@ from itertools import cycle
 import numpy as np
 import tkMessageBox
 import sys
-import FileDialog  # only usefull, when creating a windows executable file, using pyinstaller
+import FileDialog  # only useful, when creating a windows executable file, using pyinstaller
                    # without it, a few dependencies won't be imported
 
 
@@ -169,9 +169,9 @@ class MainWindow:
                 percentilevalue2 = np.percentile(np.array(self.data[cond]), int(self.percentile2_entry.get()))
                 line_x = np.arange(0.1+count, 1.0+count, 0.1)[0:10]
 
-                self.ax.plot(line_x, [percentilevalue1]*len(line_x), c="k", linewidth=0.1, linestyle="-")
-                self.ax.plot(line_x, [percentilevalue2]*len(line_x), c="k", linewidth=0.1, linestyle="-")
-                self.ax.plot([0.5+count, 0.5+count], [percentilevalue1, percentilevalue2], c="k", linewidth=0.1,
+                self.ax.plot(line_x, [percentilevalue1]*len(line_x), c="k", linewidth=1.5, linestyle="-")
+                self.ax.plot(line_x, [percentilevalue2]*len(line_x), c="k", linewidth=1.5, linestyle="-")
+                self.ax.plot([0.5+count, 0.5+count], [percentilevalue1, percentilevalue2], c="k", linewidth=1.5,
                              linestyle="-")
 
                 count += 1
