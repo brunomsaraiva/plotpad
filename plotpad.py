@@ -27,10 +27,13 @@ class MainWindow:
         self.state_median = False
         self.state_percentile = False
 
+        self.means = []
+        self.medians = []
+
         self.root = tk.Tk()
         self.root.wm_title("PlotPad")
 
-        self.fig = plt.figure(figsize=(10, 6), frameon=True)
+        self.fig = plt.figure(figsize=(16, 6), frameon=True)
         self.ax = self.fig.add_subplot(1, 1, 1)
         self.fig.subplots_adjust(bottom=0.30)
         plt.xticks([])
@@ -127,79 +130,118 @@ class MainWindow:
         self.state_file = True
 
     def plotmeanline(self):
-        count = 0
+        if self.state_plot:
+            count = 0
 
-        for cond in sorted(self.data.keys()):
-            meanvalue = np.mean(np.array(self.data[cond]))
-            line_x = np.arange(0.1+count, 1.0+count, 0.1)[0:10]
+            self.means = []
 
-            self.ax.plot(line_x, [meanvalue]*len(line_x), c="k", linewidth=1.5, linestyle="--")
-            """self.ax.annotate(str(meanvalue)[0:5], (0.4+count, meanvalue+0.3),
-                             backgroundcolor="w", bbox=dict(facecolor="red"))"""
+            for cond in sorted(self.data.keys()):
+                meanvalue = np.mean(np.array(self.data[cond]))
+                line_x = np.arange(0.1+count, 1.0+count, 0.1)[0:10]
+                self.means.append(str(meanvalue)[0:4])
 
-            count += 1
+                self.ax.plot(line_x, [meanvalue]*len(line_x), c="k", linewidth=1.5, linestyle="--")
+                """self.ax.annotate(str(meanvalue)[0:5], (0.4+count, meanvalue+0.3),
+                                 backgroundcolor="w", bbox=dict(facecolor="red"))"""
 
-        self.canvas.show()
-        self.state_mean = True
+                count += 1
+
+            self.state_mean = True
+            self.createtable()
+
+            self.canvas.show()
 
     def plotmedianline(self):
-        count = 0
-
-        for cond in sorted(self.data.keys()):
-            medianvalue = np.median(np.array(self.data[cond]))
-            line_x = np.arange(0.1+count, 1.0+count, 0.1)[0:10]
-
-            self.ax.plot(line_x, [medianvalue]*len(line_x), c="k", linewidth=2)
-            """self.ax.annotate(str(medianvalue)[0:5], (0.4+count, medianvalue+0.3),
-                             backgroundcolor="w", bbox=dict(facecolor="red"))"""
-
-            count += 1
-
-        self.canvas.show()
-        self.state_median = True
-
-    def plotpercentile(self):
-        if self.state_percentile:
-            self.clearpercentile()
-
+        if self.state_plot:
             count = 0
+            self.medians = []
 
             for cond in sorted(self.data.keys()):
-                percentilevalue1 = np.percentile(np.array(self.data[cond]), int(self.percentile1_entry.get()))
-                percentilevalue2 = np.percentile(np.array(self.data[cond]), int(self.percentile2_entry.get()))
+                medianvalue = np.median(np.array(self.data[cond]))
+                self.medians.append(str(medianvalue)[0:4])
+
                 line_x = np.arange(0.1+count, 1.0+count, 0.1)[0:10]
 
-                self.ax.plot(line_x, [percentilevalue1]*len(line_x), c="k", linewidth=1.5, linestyle="-")
-                self.ax.plot(line_x, [percentilevalue2]*len(line_x), c="k", linewidth=1.5, linestyle="-")
-                self.ax.plot([0.5+count, 0.5+count], [percentilevalue1, percentilevalue2], c="k", linewidth=1.5,
-                             linestyle="-")
+                self.ax.plot(line_x, [medianvalue]*len(line_x), c="k", linewidth=2)
 
                 count += 1
 
+            self.state_median = True
+            self.createtable()
+
             self.canvas.show()
-            self.state_percentile = True
+
+    def createtable(self):
+        celldata = []
+        conditions = sorted(self.data.keys())
+        self.fig.subplots_adjust(right=0.79)
+
+        if self.state_mean:
+            if self.state_median:
+                for i in range(len(conditions)):
+                    celldata.append([str(conditions[i]), str(self.means[i]), str(self.medians[i])])
+                self.ax.table(cellText=celldata, colLabels=["", "Mean", "Median"], cellLoc="center", loc="right",
+                              colWidths=[0.20, 0.05, 0.05])
+
+            else:
+                for i in range(len(conditions)):
+                    celldata.append([str(conditions[i]), str(self.means[i])])
+                self.ax.table(cellText=celldata, colLabels=["", "Mean"], cellLoc="center", loc="right",
+                              colWidths=[0.20, 0.05, 0.05])
+
+        elif self.state_median:
+            for i in range(len(conditions)):
+                celldata.append([str(conditions[i]), str(self.medians[i])])
+            self.ax.table(cellText=celldata, colLabels=["", "Median"], cellLoc="center", loc="right",
+                          colWidths=[0.20, 0.05, 0.05])
 
         else:
-            count = 0
+            pass
 
-            for cond in sorted(self.data.keys()):
-                percentilevalue1 = np.percentile(np.array(self.data[cond]), int(self.percentile1_entry.get()))
-                percentilevalue2 = np.percentile(np.array(self.data[cond]), int(self.percentile2_entry.get()))
-                line_x = np.arange(0.1+count, 1.0+count, 0.1)[0:10]
+    def plotpercentile(self):
+        if self.state_plot:
+            if self.state_percentile:
+                self.clearpercentile()
 
-                self.ax.plot(line_x, [percentilevalue1]*len(line_x), c="k", linewidth=1.5, linestyle="-")
-                self.ax.plot(line_x, [percentilevalue2]*len(line_x), c="k", linewidth=1.5, linestyle="-")
-                self.ax.plot([0.5+count, 0.5+count], [percentilevalue1, percentilevalue2], c="k", linewidth=1.5,
-                             linestyle="-")
+                count = 0
 
-                count += 1
+                for cond in sorted(self.data.keys()):
+                    percentilevalue1 = np.percentile(np.array(self.data[cond]), int(self.percentile1_entry.get()))
+                    percentilevalue2 = np.percentile(np.array(self.data[cond]), int(self.percentile2_entry.get()))
+                    line_x = np.arange(0.1+count, 1.0+count, 0.1)[0:10]
 
-            self.canvas.show()
-            self.state_percentile = True
+                    self.ax.plot(line_x, [percentilevalue1]*len(line_x), c="k", linewidth=1.5, linestyle="-")
+                    self.ax.plot(line_x, [percentilevalue2]*len(line_x), c="k", linewidth=1.5, linestyle="-")
+                    self.ax.plot([0.5+count, 0.5+count], [percentilevalue1, percentilevalue2], c="k", linewidth=1.5,
+                                 linestyle="-")
+
+                    count += 1
+
+                self.state_percentile = True
+                self.canvas.show()
+
+            else:
+                count = 0
+
+                for cond in sorted(self.data.keys()):
+                    percentilevalue1 = np.percentile(np.array(self.data[cond]), int(self.percentile1_entry.get()))
+                    percentilevalue2 = np.percentile(np.array(self.data[cond]), int(self.percentile2_entry.get()))
+                    line_x = np.arange(0.1+count, 1.0+count, 0.1)[0:10]
+
+                    self.ax.plot(line_x, [percentilevalue1]*len(line_x), c="k", linewidth=1.5, linestyle="-")
+                    self.ax.plot(line_x, [percentilevalue2]*len(line_x), c="k", linewidth=1.5, linestyle="-")
+                    self.ax.plot([0.5+count, 0.5+count], [percentilevalue1, percentilevalue2], c="k", linewidth=1.5,
+                                 linestyle="-")
+
+                    count += 1
+
+                self.state_percentile = True
+                self.canvas.show()
 
     def plotdata(self):
         if self.state_file:
             plt.grid(True)
+            self.fig.subplots_adjust(right=0.90)
 
             if self.state_plot:
                 self.clearplot()
