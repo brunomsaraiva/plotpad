@@ -149,7 +149,7 @@ class MainWindow:
             medianvalue = np.median(np.array(self.data[cond]))
             line_x = np.arange(0.1+count, 1.0+count, 0.1)[0:10]
 
-            self.ax.plot(line_x, [medianvalue]*len(line_x), c="k", linewidth=1.5)
+            self.ax.plot(line_x, [medianvalue]*len(line_x), c="k", linewidth=2)
             """self.ax.annotate(str(medianvalue)[0:5], (0.4+count, medianvalue+0.3),
                              backgroundcolor="w", bbox=dict(facecolor="red"))"""
 
@@ -169,9 +169,9 @@ class MainWindow:
                 percentilevalue2 = np.percentile(np.array(self.data[cond]), int(self.percentile2_entry.get()))
                 line_x = np.arange(0.1+count, 1.0+count, 0.1)[0:10]
 
-                self.ax.plot(line_x, [percentilevalue1]*len(line_x), c="k", linewidth=1.5, linestyle="-")
-                self.ax.plot(line_x, [percentilevalue2]*len(line_x), c="k", linewidth=1.5, linestyle="-")
-                self.ax.plot([0.5+count, 0.5+count], [percentilevalue1, percentilevalue2], c="k", linewidth=1.5,
+                self.ax.plot(line_x, [percentilevalue1]*len(line_x), c="k", linewidth=0.1, linestyle="-")
+                self.ax.plot(line_x, [percentilevalue2]*len(line_x), c="k", linewidth=0.1, linestyle="-")
+                self.ax.plot([0.5+count, 0.5+count], [percentilevalue1, percentilevalue2], c="k", linewidth=0.1,
                              linestyle="-")
 
                 count += 1
