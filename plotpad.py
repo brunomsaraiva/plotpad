@@ -33,7 +33,7 @@ class MainWindow:
         self.root = tk.Tk()
         self.root.wm_title("PlotPad")
 
-        self.fig = plt.figure(figsize=(16, 6), frameon=True)
+        self.fig = plt.figure(figsize=(14, 6), frameon=True)
         self.ax = self.fig.add_subplot(1, 1, 1)
         self.fig.subplots_adjust(bottom=0.30)
         plt.xticks([])
