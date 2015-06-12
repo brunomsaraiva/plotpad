@@ -174,26 +174,33 @@ class MainWindow:
     def createtable(self):
         celldata = []
         conditions = sorted(self.data.keys())
-        self.fig.subplots_adjust(right=0.79)
+        self.fig.subplots_adjust(right=0.78)
+        table_fs = 12
 
         if self.state_mean:
             if self.state_median:
                 for i in range(len(conditions)):
                     celldata.append([str(conditions[i]), str(self.means[i]), str(self.medians[i])])
-                self.ax.table(cellText=celldata, colLabels=["", "Mean", "Median"], cellLoc="center", loc="right",
-                              colWidths=[0.20, 0.05, 0.05])
+                table = self.ax.table(cellText=celldata, colLabels=["", "Mean", "Median"], cellLoc="center",
+                                      loc="right", colWidths=[0.20, 0.05, 0.07])
+                table.auto_set_font_size(False)
+                table.set_fontsize(table_fs)
 
             else:
                 for i in range(len(conditions)):
                     celldata.append([str(conditions[i]), str(self.means[i])])
-                self.ax.table(cellText=celldata, colLabels=["", "Mean"], cellLoc="center", loc="right",
-                              colWidths=[0.20, 0.05, 0.05])
+                table = self.ax.table(cellText=celldata, colLabels=["", "Mean"], cellLoc="center", loc="right",
+                                      colWidths=[0.20, 0.05, 0.05])
+                table.auto_set_font_size(False)
+                table.set_fontsize(table_fs)
 
         elif self.state_median:
             for i in range(len(conditions)):
                 celldata.append([str(conditions[i]), str(self.medians[i])])
-            self.ax.table(cellText=celldata, colLabels=["", "Median"], cellLoc="center", loc="right",
-                          colWidths=[0.20, 0.05, 0.05])
+            table = self.ax.table(cellText=celldata, colLabels=["", "Median"], cellLoc="center", loc="right",
+                                  colWidths=[0.20, 0.07, 0.05])
+            table.auto_set_font_size(False)
+            table.set_fontsize(table_fs)
 
         else:
             pass
