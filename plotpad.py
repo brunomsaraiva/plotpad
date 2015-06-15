@@ -26,6 +26,7 @@ class MainWindow:
         self.state_mean = False
         self.state_median = False
         self.state_percentile = False
+        self.state_threshold = False
 
         self.means = []
         self.medians = []
@@ -65,40 +66,52 @@ class MainWindow:
         self.plot_button = tk.Button(self.buttons_topframe, text="Plot Data", command=self.plotdata, width=b_width)
         self.plot_button.pack(side=b_side)
 
-        self.clear_button = tk.Button(self.buttons_topframe, text="Clear Plot", command=self.clearplot, width=b_width)
-        self.clear_button.pack(side=b_side)
+        self.plotpercentile_button = tk.Button(self.buttons_topframe, text="Plot Percentile",
+                                               command=self.plotpercentile, width=b_width)
+        self.plotpercentile_button.pack(side=b_side)
+
+        self.plotthreshold_button = tk.Button(self.buttons_topframe, text="Plot Threshold",
+                                              command=self.plotthreshold, width=b_width)
+        self.plotthreshold_button.pack(side=b_side)
 
         self.plotmean_button = tk.Button(self.buttons_midframe, text="Plot Mean", command=self.plotmeanline,
                                          width=b_width)
         self.plotmean_button.pack(side=b_side)
 
-        self.clearmean_button = tk.Button(self.buttons_botframe, text="Clear Mean Plot", command=self.clearmean,
-                                          width=b_width)
-        self.clearmean_button.pack(side=b_side)
-
         self.plotmedian_button = tk.Button(self.buttons_midframe, text="Plot Median", command=self.plotmedianline,
                                            width=b_width)
         self.plotmedian_button.pack(side=b_side)
+
+        self.percentile1_entry = tk.Entry(self.buttons_midframe, justify="center", width=8)
+        self.percentile1_entry.pack(side=b_side)
+        self.percentile1_entry.insert(10, "25")
+
+        self.percentile2_entry = tk.Entry(self.buttons_midframe, justify="center", width=8)
+        self.percentile2_entry.pack(side=b_side)
+        self.percentile2_entry.insert(10, "75")
+
+        self.threshold_entry = tk.Entry(self.buttons_midframe, justify="center", width=16)
+        self.threshold_entry.pack(side=b_side)
+        self.threshold_entry.insert(10, "2")
+
+        self.clearmean_button = tk.Button(self.buttons_botframe, text="Clear Mean Plot", command=self.clearmean,
+                                          width=b_width)
+        self.clearmean_button.pack(side=b_side)
 
         self.clearmedian_button = tk.Button(self.buttons_botframe, text="Clear Median Plot", command=self.clearmedian,
                                             width=b_width)
         self.clearmedian_button.pack(side=b_side)
 
-        self.plotpercentile_button = tk.Button(self.buttons_midframe, text="Plot Percentile",
-                                               command=self.plotpercentile, width=b_width)
-        self.plotpercentile_button.pack(side=b_side)
-
-        self.percentile1_entry = tk.Entry(self.buttons_botframe, justify="center", width=8)
-        self.percentile1_entry.pack(side=b_side)
-        self.percentile1_entry.insert(10, "25")
-
-        self.percentile2_entry = tk.Entry(self.buttons_botframe, justify="center", width=8)
-        self.percentile2_entry.pack(side=b_side)
-        self.percentile2_entry.insert(10, "75")
-
         self.clearpercentile_button = tk.Button(self.buttons_botframe, text="Clear Percentile",
                                                 command=self.clearpercentile, width=b_width)
         self.clearpercentile_button.pack(side=b_side)
+
+        self.clearthreshold_button = tk.Button(self.buttons_botframe, text="Clear Threshold",
+                                               command=self.clearthreshold, width=b_width)
+        self.clearthreshold_button.pack(side=b_side)
+
+        self.clear_button = tk.Button(self.buttons_botframe, text="Clear Plot", command=self.clearplot, width=b_width)
+        self.clear_button.pack(side=b_side)
 
     def formatdata(self, cond, rat):
         conditions = sorted(set(cond))
@@ -175,7 +188,7 @@ class MainWindow:
         celldata = []
         conditions = sorted(self.data.keys())
         self.fig.subplots_adjust(right=0.78)
-        table_fs = 12
+        table_fs = 11
 
         if self.state_mean:
             if self.state_median:
@@ -215,7 +228,7 @@ class MainWindow:
                 for cond in sorted(self.data.keys()):
                     percentilevalue1 = np.percentile(np.array(self.data[cond]), int(self.percentile1_entry.get()))
                     percentilevalue2 = np.percentile(np.array(self.data[cond]), int(self.percentile2_entry.get()))
-                    line_x = np.arange(0.1+count, 1.0+count, 0.1)[0:10]
+                    line_x = np.arange(0.3+count, 0.8+count, 0.1)[0:6]
 
                     self.ax.plot(line_x, [percentilevalue1]*len(line_x), c="k", linewidth=1.5, linestyle="-")
                     self.ax.plot(line_x, [percentilevalue2]*len(line_x), c="k", linewidth=1.5, linestyle="-")
@@ -233,7 +246,7 @@ class MainWindow:
                 for cond in sorted(self.data.keys()):
                     percentilevalue1 = np.percentile(np.array(self.data[cond]), int(self.percentile1_entry.get()))
                     percentilevalue2 = np.percentile(np.array(self.data[cond]), int(self.percentile2_entry.get()))
-                    line_x = np.arange(0.1+count, 1.0+count, 0.1)[0:10]
+                    line_x = np.arange(0.3+count, 0.8+count, 0.1)[0:6]
 
                     self.ax.plot(line_x, [percentilevalue1]*len(line_x), c="k", linewidth=1.5, linestyle="-")
                     self.ax.plot(line_x, [percentilevalue2]*len(line_x), c="k", linewidth=1.5, linestyle="-")
@@ -244,6 +257,14 @@ class MainWindow:
 
                 self.state_percentile = True
                 self.canvas.show()
+
+    def plotthreshold(self):
+        if self.state_plot:
+            self.ax.plot([0, len(self.data.keys())], [int(self.threshold_entry.get())]*2, c="b",
+                         linewidth=1.5, linestyle="--")
+
+            self.state_threshold = True
+            self.canvas.show()
 
     def plotdata(self):
         if self.state_file:
@@ -299,19 +320,35 @@ class MainWindow:
             self.state_percentile = False
             self.state_median = False
             self.state_mean = False
+            self.state_threshold = False
 
             self.canvas.show()
 
     def clearmean(self):
+
         if self.state_mean:
             self.state_mean = False
 
             if self.state_median:
                 if self.state_percentile:
+                    if self.state_threshold:
+                        self.clearplot()
+                        self.plotdata()
+                        self.plotmedianline()
+                        self.plotpercentile()
+                        self.plotthreshold()
+
+                    else:
+                        self.clearplot()
+                        self.plotdata()
+                        self.plotmedianline()
+                        self.plotpercentile()
+
+                elif self.state_threshold:
                     self.clearplot()
                     self.plotdata()
                     self.plotmedianline()
-                    self.plotpercentile()
+                    self.plotthreshold()
 
                 else:
                     self.clearplot()
@@ -319,9 +356,21 @@ class MainWindow:
                     self.plotmedianline()
 
             elif self.state_percentile:
+                if self.state_threshold:
+                    self.clearplot()
+                    self.plotdata()
+                    self.plotpercentile()
+                    self.plotthreshold()
+
+                else:
+                    self.clearplot()
+                    self.plotdata()
+                    self.plotpercentile()
+
+            elif self.state_threshold:
                 self.clearplot()
                 self.plotdata()
-                self.plotpercentile()
+                self.plotthreshold()
 
             else:
                 self.clearplot()
@@ -333,10 +382,24 @@ class MainWindow:
 
             if self.state_mean:
                 if self.state_percentile:
+                    if self.state_threshold:
+                        self.clearplot()
+                        self.plotdata()
+                        self.plotmeanline()
+                        self.plotpercentile()
+                        self.plotthreshold()
+
+                    else:
+                        self.clearplot()
+                        self.plotdata()
+                        self.plotmeanline()
+                        self.plotpercentile()
+
+                elif self.state_threshold:
                     self.clearplot()
                     self.plotdata()
                     self.plotmeanline()
-                    self.plotpercentile()
+                    self.plotthreshold()
 
                 else:
                     self.clearplot()
@@ -344,9 +407,72 @@ class MainWindow:
                     self.plotmeanline()
 
             elif self.state_percentile:
+                if self.state_threshold:
+                    self.clearplot()
+                    self.plotdata()
+                    self.plotpercentile()
+                    self.plotthreshold()
+
+                else:
+                    self.clearplot()
+                    self.plotdata()
+                    self.plotpercentile()
+
+            elif self.state_threshold:
                 self.clearplot()
                 self.plotdata()
-                self.plotpercentile()
+                self.plotthreshold()
+
+            else:
+                self.clearplot()
+                self.plotdata()
+
+    def clearthreshold(self):
+        if self.state_threshold:
+            self.state_threshold = False
+
+            if self.state_median:
+                if self.state_percentile:
+                    if self.state_mean:
+                        self.clearplot()
+                        self.plotdata()
+                        self.plotmedianline()
+                        self.plotpercentile()
+                        self.plotmeanline()
+
+                    else:
+                        self.clearplot()
+                        self.plotdata()
+                        self.plotmedianline()
+                        self.plotpercentile()
+
+                elif self.state_mean:
+                    self.clearplot()
+                    self.plotdata()
+                    self.plotmedianline()
+                    self.plotmeanline()
+
+                else:
+                    self.clearplot()
+                    self.plotdata()
+                    self.plotmedianline()
+
+            elif self.state_percentile:
+                if self.state_mean:
+                    self.clearplot()
+                    self.plotdata()
+                    self.plotpercentile()
+                    self.plotmeanline()
+
+                else:
+                    self.clearplot()
+                    self.plotdata()
+                    self.plotpercentile()
+
+            elif self.state_mean:
+                self.clearplot()
+                self.plotdata()
+                self.plotmeanline()
 
             else:
                 self.clearplot()
@@ -356,22 +482,48 @@ class MainWindow:
         if self.state_percentile:
             self.state_percentile = False
 
-            if self.state_mean:
-                if self.state_median:
+            if self.state_median:
+                if self.state_mean:
+                    if self.state_threshold:
+                        self.clearplot()
+                        self.plotdata()
+                        self.plotmedianline()
+                        self.plotmeanline()
+                        self.plotthreshold()
+
+                    else:
+                        self.clearplot()
+                        self.plotdata()
+                        self.plotmedianline()
+                        self.plotmeanline()
+
+                elif self.state_threshold:
+                    self.clearplot()
+                    self.plotdata()
+                    self.plotmedianline()
+                    self.plotthreshold()
+
+                else:
+                    self.clearplot()
+                    self.plotdata()
+                    self.plotmedianline()
+
+            elif self.state_mean:
+                if self.state_threshold:
                     self.clearplot()
                     self.plotdata()
                     self.plotmeanline()
-                    self.plotmedianline()
+                    self.plotthreshold()
 
                 else:
                     self.clearplot()
                     self.plotdata()
                     self.plotmeanline()
 
-            elif self.state_median:
+            elif self.state_threshold:
                 self.clearplot()
                 self.plotdata()
-                self.plotmedianline()
+                self.plotthreshold()
 
             else:
                 self.clearplot()
