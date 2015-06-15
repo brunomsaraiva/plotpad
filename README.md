@@ -5,4 +5,4 @@ read wiki for more info
 
 
 example of produced plot:
-![](http://i.imgur.com/L6HGrMM.png)
+![](http://i.imgur.com/f0QF9lI.png)
