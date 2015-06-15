@@ -124,6 +124,12 @@ class MainWindow:
 
     def openfile(self):
         filename = tkFileDialog.askopenfilename(parent=self.root, title='Open CSV file')
+
+        # in case no file is selected keeps the previous plot (if any)
+        # otherwise clears the plot before loading the new csv
+        if self.state_plot and filename != "":
+            self.clearplot()
+
         f = open(filename, "rb")
         lines = f.readlines()
         linedata = []
