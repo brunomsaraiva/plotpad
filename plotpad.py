@@ -41,7 +41,7 @@ class MainWindow:
 
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.root)
         self.canvas.show()
-        self.canvas.get_tk_widget().grid(row=0)
+        self.canvas.get_tk_widget().pack()
 
         self.toolbar = NavigationToolbar2TkAgg(self.canvas, self.root)
         self.toolbar.update()
